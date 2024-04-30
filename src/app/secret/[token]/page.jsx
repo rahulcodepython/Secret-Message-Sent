@@ -20,6 +20,25 @@ const Secret = ({ params }) => {
         name: '',
         message: ''
     })
+    const [messageSent, setMessageSent] = React.useState(true)
+
+    React.useEffect(() => {
+        const alreadyMessageSent = localStorage.getItem('alreadyMessageSent') ?? null;
+
+        if (!alreadyMessageSent) {
+            setMessageSent(false)
+        } else {
+            const messageSentObj = JSON.parse(alreadyMessageSent)
+            if (messageSentObj[params.token]) {
+                setMessageSent(true)
+                toast({
+                    title: "You have already sent a message to him."
+                })
+            } else {
+                setMessageSent(false)
+            }
+        }
+    }, [])
 
     const createMessage = async () => {
         if (message.name.length < 3 || message.message.length < 3) {
@@ -37,6 +56,15 @@ const Secret = ({ params }) => {
                 name: '',
                 message: ''
             })
+
+            const alreadyMessageSent = localStorage.getItem('alreadyMessageSent') ?? null;
+            if (!alreadyMessageSent) {
+                localStorage.setItem('alreadyMessageSent', JSON.stringify({ [params.token]: true }))
+            } else {
+                const messageSentObj = JSON.parse(alreadyMessageSent)
+                messageSentObj[params.token] = true
+                localStorage.setItem('alreadyMessageSent', JSON.stringify(messageSentObj))
+            }
         }).catch(error => {
             toast({
                 title: "There is some issue",
@@ -62,7 +90,7 @@ const Secret = ({ params }) => {
                     <Textarea value={message.message} onChange={e => setMessage({ ...message, message: e.target.value })} placeholder="Enter your message" />
                 </CardContent>
                 <CardFooter>
-                    <Button className="w-full" disabled={loading} onClick={() => createMessage()}>Send</Button>
+                    <Button className="w-full" disabled={loading ? true : messageSent} onClick={() => createMessage()}>Send</Button>
                 </CardFooter>
             </Card>
         </section>
