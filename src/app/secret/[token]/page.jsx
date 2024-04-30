@@ -60,7 +60,7 @@ const Secret = ({ params }) => {
                 name: '',
                 message: ''
             })
-
+            setMessageSent(true)
             const alreadyMessageSent = Decrypt(localStorage.getItem('alreadyMessageSent'), process.env.ENCRYPTION_KEY) ?? null;
             if (!alreadyMessageSent) {
                 localStorage.setItem('alreadyMessageSent', Encrypt(JSON.stringify({ [params.token]: true }), process.env.ENCRYPTION_KEY))
