@@ -13,8 +13,11 @@ import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
 import { toast } from '@/components/ui/use-toast'
 import axios from 'axios'
+import { Decrypt, Encrypt } from '@/utils'
+import Loading from '@/components/loading'
 
 const Secret = ({ params }) => {
+    const [pageLoading, setPageLoading] = React.useState(true)
     const [loading, setLoading] = React.useState(false);
     const [message, setMessage] = React.useState({
         name: '',
@@ -23,7 +26,7 @@ const Secret = ({ params }) => {
     const [messageSent, setMessageSent] = React.useState(true)
 
     React.useEffect(() => {
-        const alreadyMessageSent = localStorage.getItem('alreadyMessageSent') ?? null;
+        const alreadyMessageSent = Decrypt(localStorage.getItem('alreadyMessageSent'), process.env.ENCRYPTION_KEY) ?? null;
 
         if (!alreadyMessageSent) {
             setMessageSent(false)
@@ -38,6 +41,7 @@ const Secret = ({ params }) => {
                 setMessageSent(false)
             }
         }
+        setPageLoading(false)
     }, [])
 
     const createMessage = async () => {
@@ -57,13 +61,13 @@ const Secret = ({ params }) => {
                 message: ''
             })
 
-            const alreadyMessageSent = localStorage.getItem('alreadyMessageSent') ?? null;
+            const alreadyMessageSent = Decrypt(localStorage.getItem('alreadyMessageSent'), process.env.ENCRYPTION_KEY) ?? null;
             if (!alreadyMessageSent) {
-                localStorage.setItem('alreadyMessageSent', JSON.stringify({ [params.token]: true }))
+                localStorage.setItem('alreadyMessageSent', Encrypt(JSON.stringify({ [params.token]: true }), process.env.ENCRYPTION_KEY))
             } else {
                 const messageSentObj = JSON.parse(alreadyMessageSent)
                 messageSentObj[params.token] = true
-                localStorage.setItem('alreadyMessageSent', JSON.stringify(messageSentObj))
+                localStorage.setItem('alreadyMessageSent', Encrypt(JSON.stringify(messageSentObj), process.env.ENCRYPTION_KEY))
             }
         }).catch(error => {
             toast({
@@ -73,28 +77,26 @@ const Secret = ({ params }) => {
         }).finally(() => setLoading(false))
     }
 
-    return (
-        <section className='flex flex-col justify-center items-center h-screen'>
-            <Card className="max-w-2xl w-full">
-                <CardHeader>
-                    <CardTitle className="text-center">Message Board</CardTitle>
-                    <CardDescription className="w-full flex justify-center pt-4">
-                        <ul className='list-disc'>
-                            <li>Messages are end-to-end encrypted</li>
-                            <li>Enter your crispy name.</li>
-                        </ul>
-                    </CardDescription>
-                </CardHeader>
-                <CardContent className="flex flex-col gap-4">
-                    <Input type="text" value={message.name} onChange={e => setMessage({ ...message, name: e.target.value })} placeholder="Enter you name" />
-                    <Textarea value={message.message} onChange={e => setMessage({ ...message, message: e.target.value })} placeholder="Enter your message" />
-                </CardContent>
-                <CardFooter>
-                    <Button className="w-full" disabled={loading ? true : messageSent} onClick={() => createMessage()}>Send</Button>
-                </CardFooter>
-            </Card>
-        </section>
-    )
+    return pageLoading ? <Loading /> : <section className='flex flex-col justify-center items-center h-screen'>
+        <Card className="max-w-2xl w-full">
+            <CardHeader>
+                <CardTitle className="text-center">Message Board</CardTitle>
+                <CardDescription className="w-full flex justify-center pt-4">
+                    <ul className='list-disc'>
+                        <li>Messages are end-to-end encrypted</li>
+                        <li>Enter your crispy name.</li>
+                    </ul>
+                </CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-4">
+                <Input type="text" value={message.name} onChange={e => setMessage({ ...message, name: e.target.value })} placeholder="Enter you name" />
+                <Textarea value={message.message} onChange={e => setMessage({ ...message, message: e.target.value })} placeholder="Enter your message" />
+            </CardContent>
+            <CardFooter>
+                <Button className="w-full" disabled={loading ? true : messageSent} onClick={() => createMessage()}>Send</Button>
+            </CardFooter>
+        </Card>
+    </section>
 }
 
 export default Secret

@@ -1,4 +1,6 @@
 "use client"
+import Loading from '@/components/loading';
+import { Decrypt } from '@/utils';
 import { useRouter } from 'next/navigation';
 import React from 'react'
 
@@ -9,7 +11,7 @@ const SecretLayout = ({ children, params }) => {
 
     React.useEffect(() => {
         const handler = async () => {
-            const token = localStorage.getItem('token') ?? null;
+            const token = Decrypt(localStorage.getItem('token'), process.env.ENCRYPTION_KEY) ?? null;
             if (token === params.token) {
                 router.push('/')
             } else {
@@ -19,7 +21,7 @@ const SecretLayout = ({ children, params }) => {
         handler();
     }, [])
 
-    return loading ? <div>Loding...</div> : children;
+    return loading ? <Loading /> : children;
 }
 
 export default SecretLayout
