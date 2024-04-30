@@ -83,7 +83,7 @@ const Home = () => {
                 <CardContent>
                     <div className='flex flex-col gap-2 mb-4'>
                         <Input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Enter you name" readOnly={!newUser} />
-                        <Button className="w-full" onClick={() => generateLink()} disabled={!loading && !newUser}>Generate Link</Button>
+                        <Button className="w-full" onClick={() => generateLink()} disabled={!loading ? true : !newUser}>Generate Link</Button>
                     </div>
                     <Input type="text" value={link} readOnly={true} />
                 </CardContent>
