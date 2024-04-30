@@ -15,6 +15,7 @@ import { toast } from '@/components/ui/use-toast'
 import axios from 'axios'
 import { Decrypt, Encrypt } from '@/utils'
 import Loading from '@/components/loading'
+import Link from 'next/link'
 
 const Secret = ({ params }) => {
     const [pageLoading, setPageLoading] = React.useState(true)
@@ -92,8 +93,13 @@ const Secret = ({ params }) => {
                 <Input type="text" value={message.name} onChange={e => setMessage({ ...message, name: e.target.value })} placeholder="Enter you name" />
                 <Textarea value={message.message} onChange={e => setMessage({ ...message, message: e.target.value })} placeholder="Enter your message" />
             </CardContent>
-            <CardFooter>
+            <CardFooter className="flex flex-col gap-4">
                 <Button className="w-full" disabled={loading ? true : messageSent} onClick={() => createMessage()}>Send</Button>
+                <Link href="/">
+                    <Button>
+                        Create Our Own Profile
+                    </Button>
+                </Link>
             </CardFooter>
         </Card>
     </section>
