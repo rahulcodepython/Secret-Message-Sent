@@ -75,7 +75,7 @@ const Home = () => {
         <section className='flex flex-col items-center justify-center h-full space-y-8 my-24'>
             <Card className="max-w-2xl w-full">
                 <CardHeader>
-                    <CardTitle className="text-center">Secret Message {`${loading}${newUser}`}</CardTitle>
+                    <CardTitle className="text-center">Secret Message{`${newUser}`}</CardTitle>
                     <CardDescription className="text-center">
                         Hi, Your link has been generated SuccessfullyNow share your link with your friends:
                     </CardDescription>
@@ -83,7 +83,7 @@ const Home = () => {
                 <CardContent>
                     <div className='flex flex-col gap-2 mb-4'>
                         <Input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Enter you name" readOnly={!newUser} />
-                        <Button className="w-full" onClick={() => generateLink()} disabled={!loading ? true : !newUser}>Generate Link</Button>
+                        <Button className="w-full" onClick={() => generateLink()} disabled={loading ? true : !newUser}>Generate Link</Button>
                     </div>
                     <Input type="text" value={link} readOnly={true} />
                 </CardContent>
