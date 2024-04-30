@@ -95,8 +95,8 @@ const Secret = ({ params }) => {
             </CardContent>
             <CardFooter className="flex flex-col gap-4">
                 <Button className="w-full" disabled={loading ? true : messageSent} onClick={() => createMessage()}>Send</Button>
-                <Link href="/">
-                    <Button>
+                <Link href="/" className='w-full'>
+                    <Button className="w-full">
                         Create Our Own Profile
                     </Button>
                 </Link>
