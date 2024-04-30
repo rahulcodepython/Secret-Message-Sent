@@ -14,6 +14,7 @@ import axios from 'axios'
 import { toast } from '@/components/ui/use-toast'
 import { Decrypt, Encrypt } from '@/utils'
 import Loading from '@/components/loading'
+import CopyToClipboard from 'react-copy-to-clipboard'
 
 const Home = () => {
     const [pageLoading, setPageLoading] = React.useState(true)
@@ -62,7 +63,6 @@ const Home = () => {
                     title: "Your link is generated."
                 })
             }).catch(err => {
-                setName('')
                 toast({
                     title: "There is some issue",
                     description: err.message,
@@ -80,7 +80,7 @@ const Home = () => {
             <CardHeader>
                 <CardTitle className="text-center">Secret Message{`${newUser}`}</CardTitle>
                 <CardDescription className="text-center">
-                    Hi, Your link has been generated SuccessfullyNow share your link with your friends:
+                    Hi, Your link has been generated Successfully. Now share your link with your friends:
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -91,7 +91,13 @@ const Home = () => {
                 <Input type="text" value={link} readOnly={true} />
             </CardContent>
             <CardFooter>
-                <Button className="w-full">Copy Link</Button>
+                <CopyToClipboard text={link} onCopy={() => {
+                    toast({
+                        title: "Link copied successfully."
+                    })
+                }}>
+                    <Button className="w-full">Copy Link</Button>
+                </CopyToClipboard>
             </CardFooter>
         </Card>
         {

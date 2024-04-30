@@ -1,15 +1,13 @@
 export const Decrypt = (token, key) => {
-    let decryptedToken = '';
-    for (let i = 0; i < token?.length; i++) {
-        decryptedToken += String.fromCharCode(token.charCodeAt(i) ^ key.charCodeAt(i % key.length));
-    }
-    return decryptedToken;
+    const cipher = crypto.createCipher('aes-256-cbc', key);
+    let encrypted = cipher.update(token, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    return encrypted;
 }
 
 export const Encrypt = (token, key) => {
-    let encryptedToken = '';
-    for (let i = 0; i < token?.length; i++) {
-        encryptedToken += String.fromCharCode(token.charCodeAt(i) ^ key.charCodeAt(i % key.length));
-    }
-    return encryptedToken;
+    const decipher = crypto.createDecipher('aes-256-cbc', key);
+    let decrypted = decipher.update(token, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    return decrypted;
 }
